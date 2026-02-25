@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
 import { getDB, Article } from "../../lib/db";
 import { ArrowRight, Calendar, User, Tag, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
 
@@ -102,7 +104,9 @@ export default function ArticleDetail() {
         {/* Article Content */}
         <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-200 mb-16">
           <div className="prose prose-slate prose-lg max-w-none rtl:prose-p:text-right rtl:prose-headings:text-right prose-headings:font-bold prose-h2:text-3xl prose-h3:text-2xl prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-xl prose-img:shadow-md">
-            <ReactMarkdown>{article.content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]}>
+              {article.content}
+            </ReactMarkdown>
           </div>
 
           {/* Tags */}

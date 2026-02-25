@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { getDB, Article } from "../../lib/db";
 import { generateSlug } from "../../lib/utils";
-import { Save, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { Save, ArrowRight, Image as ImageIcon, UploadCloud } from "lucide-react";
 
 export default function ArticleEditor() {
   const { id } = useParams();
@@ -25,6 +25,8 @@ export default function ArticleEditor() {
   });
 
   const [tagsInput, setTagsInput] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const contentFileInputRef = useRef<HTMLInputElement>(null);
 
   const pillars = [
     'طراحی مدل کسب‌وکار',
@@ -55,6 +57,26 @@ export default function ArticleEditor() {
       slug: isNew ? generateSlug(title) : prev.slug,
       seoTitle: isNew ? title : prev.seoTitle
     }));
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, target: 'featured' | 'content') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      if (target === 'featured') {
+        setArticle(prev => ({ ...prev, featuredImage: base64String }));
+      } else {
+        const imageMarkdown = `\n![${file.name}](${base64String})\n`;
+        setArticle(prev => ({ ...prev, content: (prev.content || "") + imageMarkdown }));
+      }
+    };
+    reader.readAsDataURL(file);
+    
+    // Reset input
+    e.target.value = '';
   };
 
   const handleSave = async () => {
@@ -127,7 +149,23 @@ export default function ArticleEditor() {
           </div>
 
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-            <label className="block text-sm font-medium text-slate-700 mb-2">محتوا (Markdown)</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-slate-700">محتوا (Markdown)</label>
+              <button 
+                onClick={() => contentFileInputRef.current?.click()}
+                className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors bg-blue-50 px-2 py-1 rounded-md"
+              >
+                <UploadCloud size={14} />
+                افزودن تصویر به متن
+              </button>
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                ref={contentFileInputRef}
+                onChange={(e) => handleImageUpload(e, 'content')}
+              />
+            </div>
             <textarea
               value={article.content}
               onChange={(e) => setArticle({ ...article, content: e.target.value })}
@@ -196,17 +234,42 @@ export default function ArticleEditor() {
             </h3>
             <div className="space-y-4">
               {article.featuredImage && (
-                <div className="aspect-video rounded-lg overflow-hidden border border-slate-200">
+                <div className="aspect-video rounded-lg overflow-hidden border border-slate-200 relative group">
                   <img src={article.featuredImage} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button 
+                      onClick={() => setArticle({ ...article, featuredImage: "" })}
+                      className="px-3 py-1 bg-red-600 text-white rounded-md text-xs font-medium"
+                    >
+                      حذف تصویر
+                    </button>
+                  </div>
                 </div>
               )}
-              <input
-                type="text"
-                value={article.featuredImage}
-                onChange={(e) => setArticle({ ...article, featuredImage: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-blue-600 text-sm"
-                placeholder="آدرس تصویر (URL)"
-              />
+              
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={article.featuredImage}
+                  onChange={(e) => setArticle({ ...article, featuredImage: e.target.value })}
+                  className="flex-1 px-4 py-2 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-blue-600 text-sm"
+                  placeholder="آدرس تصویر (URL)"
+                />
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center"
+                  title="آپلود تصویر"
+                >
+                  <UploadCloud size={18} />
+                </button>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={fileInputRef}
+                  onChange={(e) => handleImageUpload(e, 'featured')}
+                />
+              </div>
             </div>
           </div>
 

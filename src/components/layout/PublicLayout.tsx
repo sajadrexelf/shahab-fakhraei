@@ -1,10 +1,21 @@
 import { Outlet, Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "../../lib/utils";
+import { getDB, SiteSettings } from "../../lib/db";
 
 export default function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    async function loadSettings() {
+      const db = await getDB();
+      const s = await db.get("settings", "global");
+      if (s) setSettings(s);
+    }
+    loadSettings();
+  }, []);
 
   const navLinks = [
     { name: "صفحه اصلی", href: "/" },
@@ -15,8 +26,13 @@ export default function PublicLayout() {
     { name: "تماس با ما", href: "/contact" },
   ];
 
+  const customStyle = settings ? {
+    "--color-primary": settings.primaryColor,
+    fontFamily: settings.fontFamily === "Inter" ? "Inter, sans-serif" : `"${settings.fontFamily}", sans-serif`
+  } as React.CSSProperties : {};
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans" dir="rtl">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900" dir="rtl" style={customStyle}>
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">

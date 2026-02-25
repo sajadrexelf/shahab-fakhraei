@@ -15,6 +15,8 @@ import PodcastHub from "./pages/public/PodcastHub";
 import VideoHub from "./pages/public/VideoHub";
 import About from "./pages/public/About";
 import Contact from "./pages/public/Contact";
+import Newsletter from "./pages/public/Newsletter";
+import Privacy from "./pages/public/Privacy";
 
 // Admin Pages
 import Dashboard from "./pages/admin/Dashboard";
@@ -36,11 +38,14 @@ export default function App() {
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
             <Route path="blog" element={<BlogHub />} />
+            <Route path="category/:pillar" element={<BlogHub />} />
             <Route path="blog/:slug" element={<ArticleDetail />} />
             <Route path="podcast" element={<PodcastHub />} />
             <Route path="videos" element={<VideoHub />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
+            <Route path="newsletter" element={<Newsletter />} />
+            <Route path="privacy" element={<Privacy />} />
             {/* Fallback */}
             <Route path="*" element={<div className="p-20 text-center">صفحه مورد نظر یافت نشد.</div>} />
           </Route>

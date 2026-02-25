@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { getDB, Article } from "../../lib/db";
 import { ArrowLeft, Search, Filter } from "lucide-react";
 
 export default function BlogHub() {
+  const { pillar: urlPillar } = useParams();
   const [articles, setArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +17,21 @@ export default function BlogHub() {
     'مقياس‌پذیری و سیستم‌سازی',
     'رهبری و تصمیم‌گیری استراتژیک'
   ];
+
+  const pillarMap: Record<string, string> = {
+    'business-model': 'طراحی مدل کسب‌وکار',
+    'marketing': 'سیستم‌های رشد و بازاریابی',
+    'systemization': 'مقياس‌پذیری و سیستم‌سازی',
+    'leadership': 'رهبری و تصمیم‌گیری استراتژیک'
+  };
+
+  useEffect(() => {
+    if (urlPillar && pillarMap[urlPillar]) {
+      setSelectedPillar(pillarMap[urlPillar]);
+    } else {
+      setSelectedPillar("all");
+    }
+  }, [urlPillar]);
 
   useEffect(() => {
     async function loadArticles() {

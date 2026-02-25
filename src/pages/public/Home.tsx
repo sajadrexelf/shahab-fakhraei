@@ -209,6 +209,64 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Testimonials */}
+      {settings.showTestimonials && (
+        <section className="py-20 bg-slate-50 border-t border-slate-200">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">نظرات دانشجویان و مدیران</h2>
+              <p className="text-slate-600 max-w-2xl mx-auto">داستان موفقیت کسانی که با استفاده از چارچوب‌های آکادمی رشد، کسب‌وکار خود را متحول کردند.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { name: "علی رضایی", role: "مدیرعامل استارتاپ فین‌تک", text: "آموزش‌های آکادمی رشد به ما کمک کرد تا در کمتر از ۶ ماه، نرخ تبدیل خود را ۳۰۰٪ افزایش دهیم. چارچوب‌های ارائه شده کاملاً اجرایی هستند." },
+                { name: "سارا محمدی", role: "هم‌بنیان‌گذار آژانس دیجیتال", text: "بهترین منبع برای یادگیری سیستم‌سازی. من توانستم با پیاده‌سازی این اصول، وابستگی کسب‌وکار به خودم را به حداقل برسانم." },
+                { name: "محمد کریمی", role: "مدیر مارکتینگ", text: "پادکست‌ها و مقالات آکادمی رشد، دیدگاه من را نسبت به بازاریابی B2B کاملاً تغییر داد. محتوایی عمیق و به دور از کلیشه‌ها." }
+              ].map((t, i) => (
+                <div key={i} className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
+                  <div className="absolute top-8 right-8 text-6xl text-blue-100 font-serif leading-none">"</div>
+                  <p className="text-slate-700 leading-relaxed mb-8 relative z-10">{t.text}</p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-slate-200 rounded-full overflow-hidden">
+                      <img src={`https://picsum.photos/seed/user${i}/100/100`} alt={t.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900">{t.name}</div>
+                      <div className="text-sm text-slate-500">{t.role}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FAQ */}
+      {settings.showFAQ && (
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4 max-w-3xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">سوالات متداول</h2>
+              <p className="text-slate-600">پاسخ به پرتکرارترین سوالات شما درباره آکادمی رشد.</p>
+            </div>
+            <div className="space-y-4">
+              {[
+                { q: "آیا محتوای آکادمی برای کسب‌وکارهای سنتی هم مناسب است؟", a: "بله، اصول سیستم‌سازی و رهبری که در آکادمی آموزش داده می‌شود، برای تمامی کسب‌وکارها (سنتی و آنلاین) قابل اجرا است." },
+                { q: "چگونه می‌توانم به دوره‌های تخصصی دسترسی پیدا کنم؟", a: "در حال حاضر تمرکز ما بر روی مقالات، پادکست‌ها و ویدیوهای رایگان است. دوره‌های تخصصی به زودی در بخش مجزایی ارائه خواهند شد." },
+                { q: "آیا امکان مشاوره اختصاصی وجود دارد؟", a: "بله، شما می‌توانید از طریق صفحه تماس با ما، درخواست مشاوره اختصاصی خود را ثبت کنید تا همکاران ما با شما تماس بگیرند." },
+                { q: "چگونه می‌توانم از جدیدترین مطالب مطلع شوم؟", a: "بهترین راه، عضویت در خبرنامه ایمیلی آکادمی است. ما هر هفته جدیدترین مقالات و پادکست‌ها را برای اعضا ارسال می‌کنیم." }
+              ].map((faq, i) => (
+                <div key={i} className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{faq.q}</h3>
+                  <p className="text-slate-600 leading-relaxed">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

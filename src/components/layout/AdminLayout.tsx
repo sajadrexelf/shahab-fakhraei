@@ -1,9 +1,21 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, FileText, Mic, Video, Users, Settings, LogOut } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { useState, useEffect } from "react";
+import { getDB, SiteSettings } from "../../lib/db";
 
 export default function AdminLayout() {
   const location = useLocation();
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    async function loadSettings() {
+      const db = await getDB();
+      const s = await db.get("settings", "global");
+      if (s) setSettings(s);
+    }
+    loadSettings();
+  }, []);
 
   const navItems = [
     { name: "داشبورد", href: "/admin", icon: LayoutDashboard },
@@ -14,8 +26,12 @@ export default function AdminLayout() {
     { name: "تنظیمات", href: "/admin/settings", icon: Settings },
   ];
 
+  const customStyle = settings ? {
+    fontFamily: settings.fontFamily === "Inter" ? "Inter, sans-serif" : `"${settings.fontFamily}", sans-serif`
+  } as React.CSSProperties : {};
+
   return (
-    <div className="min-h-screen flex bg-slate-100 text-slate-900 font-sans" dir="rtl">
+    <div className="min-h-screen flex bg-slate-100 text-slate-900" dir="rtl" style={customStyle}>
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col fixed inset-y-0 right-0 z-10">
         <div className="h-16 flex items-center px-6 border-b border-slate-800">
